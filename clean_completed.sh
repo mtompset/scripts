@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Copyright (C) 2015  Mark Tompsett
-# Copyright (C) 2015  Barton Chittenden (status optimmization loop)
+# Copyright (C) 2015  Barton Chittenden (status optimization loop)
 #
 # This is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
