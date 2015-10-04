@@ -19,40 +19,49 @@
 # The script takes a huge GenBank file containing multiple sequences
 # and splits them to multiple GenBank files with only one sequence
 # in each.
+#
 # Thanks goes out to D Ruth Bavousett for showing me $PROGRAM_NAME
 # in the English package. It's perlcritic cleaner as a result.
 
 use strict;
 use warnings;
-use Carp;
+use Carp qw( carp croak );
 use English qw( -no_match_vars );
 
-if ($#ARGV!=0) {
-    carp 'Usage: ' . $PROGRAM_NAME . ' {GenBank File With Multiple Sequences}';
+$OUTPUT_AUTOFLUSH = 1;
+
+if ( $#ARGV != 0 ) {
+    carp "Usage: $PROGRAM_NAME {GenBank File With Multiple Sequences}";
     exit;
 }
 
 my $filename = $ARGV[0];
 open my $fh, '<', $filename or croak 'read kaboom!';
 my $output_filename = q{};
-my $sequence = q{};
-my $line = q{};
-while ($line = <$fh>) {
-    if ($line =~ /^LOCUS/xsm) {
+my $sequence        = q{};
+my $line            = q{};
+while ( $line = <$fh> ) {
+    if ( $line =~ /^LOCUS/xsm ) {
         if ($sequence) {
-            if (-e $output_filename) {
-                print STDERR "ERROR: $output_filename exists\n";
+            if ( -e $output_filename ) {
+                carp "ERROR: $output_filename exists";
             }
             else {
                 open my $fh2, '>', $output_filename or croak 'write kaboom!';
-                print $fh2 $sequence;
+                my $print_check = print {$fh2} $sequence;
                 my $rv = close $fh2;
+                if ($print_check) {
+                    my $ignore = print "SUCCEEDED\n";
+                }
+                else {
+                    my $ignore = print "FAILED\n";
+                }
             }
         }
         $sequence = $line;
-        if ($line =~ /^LOCUS\s*(\S*)\s*/xsm) {
+        if ( $line =~ /^LOCUS\s*(\S*)\s*/xsm ) {
             $output_filename = $1;
-            print "PROCESSING $output_filename\n";
+            my $ignore = print "PROCESSING $output_filename ... ";
         }
     }
     else {
@@ -61,13 +70,19 @@ while ($line = <$fh>) {
 }
 
 if ($sequence) {
-    if (-e $output_filename) {
-        print STDERR "ERROR: $output_filename exists\n";
+    if ( -e $output_filename ) {
+        carp "ERROR: $output_filename exists";
     }
     else {
         open my $fh2, '>', $output_filename or croak 'write kaboom!';
-        print $fh2 $sequence;
+        my $print_check = print {$fh2} $sequence;
         my $rv = close $fh2;
+        if ($print_check) {
+            my $ignore = print "SUCCEEDED\n";
+        }
+        else {
+            my $ignore = print "FAILED\n";
+        }
     }
 }
 
