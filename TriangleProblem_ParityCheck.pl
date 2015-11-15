@@ -25,8 +25,6 @@ use Modern::Perl;
 use Data::Dumper;
 use English qw ( -no_match_vars );
 use Time::HiRes qw (time);
-use Algorithm::Combinatorics qw(variations);
-use List::MoreUtils qw(uniq);
 use Carp;
 
 $OUTPUT_AUTOFLUSH = 1;
